@@ -81,7 +81,7 @@ describe('RetryOrchestrator', () => {
     let callCount = 0;
     const result = await RetryOrchestrator.withRetry(
       // Agent function that always succeeds
-      async (_feedback: string | null) => {
+      async (_feedback?: string) => {
         callCount++;
         return { sepsisProbability: 0.7, mortalityProbability: 0.3, confidenceScore: 0.9 };
       },
@@ -100,7 +100,7 @@ describe('RetryOrchestrator', () => {
     let callCount = 0;
     const result = await RetryOrchestrator.withRetry(
       // Agent function fails on first try, succeeds on second
-      async (_feedback: string | null) => {
+      async (_feedback?: string) => {
         callCount++;
         if (callCount < 2) {
           return { sepsisProbability: -1, mortalityProbability: 0.3, confidenceScore: 0.9 };
@@ -125,7 +125,7 @@ describe('RetryOrchestrator', () => {
     await expect(
       RetryOrchestrator.withRetry(
         // Always returns invalid result
-          async (_feedback: string | null) => ({ sepsisProbability: -1, mortalityProbability: -1, confidenceScore: -1 }),
+          async (_feedback?: string) => ({ sepsisProbability: -1, mortalityProbability: -1, confidenceScore: -1 }),
         // Validator always rejects
         (_res: any) => ({ isValid: false, error: 'always invalid' }),
         2 // Only 2 retries
